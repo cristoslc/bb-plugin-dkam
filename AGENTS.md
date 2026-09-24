@@ -1,5 +1,10 @@
 # AGENTS.md
 
+## Purpose
+
+See [PURPOSE.md](PURPOSE.md) for the one-paragraph outcome this project
+exists to deliver.
+
 ## Project purpose
 
 DKAM (Distracted Keyboardless Agent Mode) is a BB plugin providing a
@@ -61,3 +66,7 @@ assumed about agent-graph's internals.
 ## Test command
 
 TODO: not yet determined. Once tests exist, declare the command here.
+
+## Navigation
+
+Project navigation, hubs, and spokes: [docs/agents-detail/project-navigation.md](docs/agents-detail/project-navigation.md).
