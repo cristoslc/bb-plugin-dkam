@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Integration contract specs for all seven cross-context events
+  (`docs/domain-architecture/events/*.yaml`) against the event-spec
+  meta-schema, with contract-conformance tests (`npm test`, vitest) including
+  the inverse malformed-spec test
+- C4 component diagram and snapshot/drift sequence diagrams
 - Initial scaffold: headless BB plugin (`bb-plugin-dkam`)
 - `bb dkam status|watch|unwatch|recap` CLI
 - `state_snapshot` agent tool (stubbed until agent-graph serves its HTTP endpoint)

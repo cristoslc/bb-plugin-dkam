@@ -18,8 +18,12 @@ bb dkam status        # try the CLI
 
 ## Test
 
-TODO: not yet determined. Once tests exist, the command will be declared in
-the root `AGENTS.md` under `## Test command`.
+```sh
+npm test   # vitest run — contract conformance over docs/domain-architecture/events/
+```
+
+The command is also declared in the root `AGENTS.md` under `## Test command`.
+Plugin runtime tests (CLI behavior against a live server) are TBD.
 
 ## Deploy
 

@@ -1,0 +1,12 @@
+event: SnapshotRequested
+version: 1
+producer: PhoneChannel
+owner: DKAM
+consumers:
+  - Supervision
+payload:
+  threadId: string
+description: >-
+  Fired when the operator asks "where am I" on the phone channel (voice or
+  page action) and the request names a working thread to snapshot.
+since: 1

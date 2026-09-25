@@ -1,21 +1,27 @@
 # Integration events (crossing bounded contexts)
 
 Events below cross a DKAM context boundary (Supervision ↔ Phone Channel) or
-arrive from foreign contexts (BB core, agent-graph). Formal YAML specs for
-each event live in [events/](events/) as they are implemented.
+arrive from foreign contexts (BB core, agent-graph). Each has a
+machine-checkable YAML spec in [events/](events/), validated against
+`events/schemas/event-spec.schema.yaml` by `npm test`.
 
-| Event | Producing context | Consuming context | Payload shape | Delivery |
-|---|---|---|---|---|
-| `drift_alert.raised` | Supervision | Phone Channel | threadId, anchor, observed, severity | websocket message → TTS |
-| `episode.boundary_reached` | Supervision | Phone Channel, Supervision | threadId, episodeNumber, elapsed | websocket → TTS; re-grounding prompt |
-| `action.queued` | Supervision | Phone Channel | threadId, kind (commit/push/delete), summary | websocket → TTS heads-up |
-| `snapshot.requested` | Phone Channel | Supervision | threadId | websocket in |
-| `snapshot.delivered` | Supervision | Phone Channel | threadId, text | websocket → TTS |
-| `voice.transcribed` | Phone Channel | Supervision | text, confidence | websocket in (BB voice transcription) |
-| `graph.state_read` | agent-graph (foreign) | Supervision | Graph JSON | HTTP GET poll |
+| Event | Spec | Producing context | Consuming context | Delivery | Status |
+|---|---|---|---|---|---|
+| `DriftAlertRaised` | [events/drift-alert-raised.yaml](events/drift-alert-raised.yaml) | Supervision | PhoneChannel | websocket → TTS | spec'd, unimplemented |
+| `EpisodeBoundaryReached` | [events/episode-boundary-reached.yaml](events/episode-boundary-reached.yaml) | Supervision | PhoneChannel, Supervision | websocket → TTS; re-grounding prompt | spec'd, unimplemented |
+| `ActionQueued` | [events/action-queued.yaml](events/action-queued.yaml) | Supervision | PhoneChannel | websocket → TTS heads-up | spec'd, unimplemented |
+| `SnapshotRequested` | [events/snapshot-requested.yaml](events/snapshot-requested.yaml) | PhoneChannel | Supervision | websocket in | spec'd, unimplemented |
+| `SnapshotDelivered` | [events/snapshot-delivered.yaml](events/snapshot-delivered.yaml) | Supervision | PhoneChannel | websocket → TTS | spec'd, unimplemented |
+| `VoiceTranscribed` | [events/voice-transcribed.yaml](events/voice-transcribed.yaml) | PhoneChannel | Supervision | websocket in (BB voice transcription) | spec'd, unimplemented |
+| `GraphStateRead` | [events/graph-state-read.yaml](events/graph-state-read.yaml) | AgentGraph (foreign) | Supervision | HTTP GET poll | spec'd, unimplemented |
 
 Rules:
 
 - Internal events within a single context do not belong here.
-- Every event implemented in code gets a YAML spec under `events/` with
-  contract-conformance tests, per the integration contracts standard.
+- Spec-first: the YAML spec under `events/` is written (and conformance-tested)
+  before the producing code. A spec change is either safe (additive, optional)
+  or breaking — breaking changes bump `version` and deprecate first, remove
+  later.
+- `AgentGraph` is a foreign context; DKAM cannot change its contract. The
+  `GraphStateRead` spec describes what DKAM consumes, not what agent-graph
+  must serve — the wire contract it depends on is fixed in AGENTS.md.

@@ -1,0 +1,16 @@
+event: EpisodeBoundaryReached
+version: 1
+producer: Supervision
+owner: DKAM
+consumers:
+  - PhoneChannel
+  - Supervision
+payload:
+  threadId: string
+  episodeNumber: integer
+  elapsedMinutes: number
+description: >-
+  Fired when a watched working thread's run reaches the configured episode
+  length cap. Consumed by PhoneChannel (announce to operator) and by
+  Supervision itself (halt further work until re-grounding completes).
+since: 1

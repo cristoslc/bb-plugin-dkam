@@ -65,7 +65,13 @@ assumed about agent-graph's internals.
 
 ## Test command
 
-TODO: not yet determined. Once tests exist, declare the command here.
+```
+npm test
+```
+
+Runs `vitest run` over `tests/`. Currently covers integration-contract
+conformance (`docs/domain-architecture/events/` specs against the meta-schema,
+plus the inverse malformed-spec test). Plugin runtime tests are TBD.
 
 ## Navigation
 

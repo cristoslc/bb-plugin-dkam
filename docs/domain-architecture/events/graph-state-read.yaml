@@ -1,0 +1,15 @@
+event: GraphStateRead
+version: 1
+producer: AgentGraph
+owner: DKAM
+consumers:
+  - Supervision
+payload:
+  threadId: string
+  fetchedAt: string
+description: >-
+  Fired when Supervision successfully reads a working thread's Graph JSON
+  from the agent-graph plugin (GET /api/v1/plugins/agent-graph/http/graph).
+  Payload records the read, not the graph itself; the Graph model is the
+  internal translation target of the GraphClient anticorruption layer.
+since: 1

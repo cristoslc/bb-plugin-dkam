@@ -1,0 +1,16 @@
+event: ActionQueued
+version: 1
+producer: Supervision
+owner: DKAM
+consumers:
+  - PhoneChannel
+payload:
+  threadId: string
+  kind: string
+  summary: string
+description: >-
+  Fired when a watched working thread attempts a consequential action
+  (commit, push, delete) and Supervision defers it to the review queue
+  instead of letting it execute. kind is one of "commit" | "push" | "delete";
+  summary is a one-line human-readable description of what was requested.
+since: 1

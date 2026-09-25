@@ -1,0 +1,14 @@
+event: SnapshotDelivered
+version: 1
+producer: Supervision
+owner: DKAM
+consumers:
+  - PhoneChannel
+payload:
+  threadId: string
+  text: string
+description: >-
+  Fired when Supervision finishes rendering a state snapshot for a working
+  thread; PhoneChannel speaks it to the operator. text is the compact,
+  speakable summary (already rendered; not raw agent output).
+since: 1

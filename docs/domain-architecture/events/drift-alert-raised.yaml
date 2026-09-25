@@ -1,0 +1,17 @@
+event: DriftAlertRaised
+version: 1
+producer: Supervision
+owner: DKAM
+consumers:
+  - PhoneChannel
+payload:
+  threadId: string
+  anchor: string
+  observed: string
+  severity: string
+description: >-
+  Fired when the drift watcher judges a working thread's current activity as
+  diverging from its stated intent anchor. severity is one of
+  "minor" | "major" | "off-task" (enum documented here, widened only via a
+  version bump).
+since: 1

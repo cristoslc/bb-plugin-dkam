@@ -1,0 +1,14 @@
+event: VoiceTranscribed
+version: 1
+producer: PhoneChannel
+owner: DKAM
+consumers:
+  - Supervision
+payload:
+  text: string
+  confidence: number
+description: >-
+  Fired when the phone channel receives operator voice and BB's voice
+  transcription AI service returns text. confidence (0.0-1.0) gates how much
+  Supervision may act on the heard command without confirmation.
+since: 1
