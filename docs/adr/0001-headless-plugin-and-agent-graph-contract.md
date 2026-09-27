@@ -39,7 +39,9 @@ Rationale:
 
 - Phone-channel HTML is served as strings/routes from the plugin, not a
   bundled app; keep it small.
-- If agent-graph's endpoint shape changes, only `fetchGraph`/`summarizeGraph`
-  need updating.
-- Plugin SQLite (`bb.storage.database()`) becomes necessary once episode and
-  drift history outgrow KV; planned as the first storage migration.
+- If agent-graph's endpoint shape changes, only the graph fetch and whatever
+  reads facts from it need updating.
+- Plugin SQLite (`bb.storage.database()`) becomes necessary once the duty log
+  and job-card history outgrow KV; planned as the first storage migration.
+- The endpoint is a read-only source of verified facts. It is not a substrate
+  for a judgment about whether a run went well.

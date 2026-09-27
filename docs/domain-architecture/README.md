@@ -1,9 +1,5 @@
-# Domain architecture
+# Domain architecture (spoke docs)
 
-Spoke directory for the domain surface. The surface hub is
-[DOMAIN-MODEL-L1.md](../DOMAIN-MODEL-L1.md) at the top of `docs/`.
-
-- `CONTEXT-MAP.md` — bounded contexts and their relationships
-- `DOMAIN-EVENTS.md` — cross-context integration events (narrative table)
-- `DOMAIN-MODEL-L2.md` — L2 ubiquitous language: aggregates, ERDs, invariants
-- `events/` — event contract YAML specs (one per implemented event)
+Deliberately empty. The domain model is rebuilt spec-first once milestone 1
+exists to describe, per the handoff. The vocabulary and the model as currently
+understood live in [../HANDOFF.md](../HANDOFF.md), sections 4 and 5.

@@ -1,9 +1,9 @@
 # Purpose
 
-DKAM lets an operator keep a BB agent working while away from any screen, and
-never have to come back to the desk to unblock it. The operator declares a
-constraint set once; DKAM checks it mechanically at every turn boundary, speaks
-only verified facts and rule violations in one line with a one-word fix, records
-every decision no rule covered as a stated assumption, and parks unresolved
-items instead of stopping. Speech in and out, no screen, no keyboard, no desk
-round trip.
+DKAM lets one operator supervise a running coding agent while being away from
+every screen, and never have to return to a desk to unblock the work. The
+operator states a mission and its boundaries; the agent chooses means, executes
+inside those boundaries, and records every call it made on its own authority. DKAM
+enforces the boundaries outside the agent so nothing ever waits for a human, and
+keeps a duty log plus a single end-of-run report so absence is safe. Speech in
+and out, one word to answer, no screen and no keyboard.

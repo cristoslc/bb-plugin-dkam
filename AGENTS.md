@@ -2,66 +2,51 @@
 
 ## Purpose
 
-See [PURPOSE.md](PURPOSE.md) for the one-paragraph outcome this project
-exists to deliver.
+See [PURPOSE.md](PURPOSE.md) for the one-paragraph outcome this project exists
+to deliver.
 
-## Project purpose
+## Current state
 
-DKAM (Distracted Keyboardless Agent Mode) is a BB plugin providing a
-metacognitive support layer for hands-free agentic coding — the operator is
-walking or biking, with no screen and no keyboard.
+**Nothing is implemented.** The design lives in [docs/HANDOFF.md](docs/HANDOFF.md),
+which is authoritative. Read it before doing anything in this repo. It contains
+the operator evidence, the two-sided design, the seam that keeps a model out of
+any halt/allow/veto path, the target module layout, the milestone order, and the
+afternoon-long experiment that validates or kills the premise.
 
-DKAM does NOT narrate agent output. It:
+Do not add, and do not reintroduce:
 
-1. **Externalizes working memory** — a "state snapshot" the operator pulls on
-   demand ("where am I"), summarizing what the working thread is doing.
-2. **Monitors for drift** — compares the working thread's activity against a
-   stated episode intent anchor and interrupts when the agent diverges.
-3. **Manages episodes** — caps working-thread runs to ~5-10 minutes and forces
-   re-grounding at episode boundaries.
-4. **Defers consequential actions** — commits/pushes/deletes are queued with a
-   heads-up, reviewed at a stop or back at desk.
-5. **Provides a phone channel** — a websocket-served HTML page for TTS output
-   and voice input.
+- drift detection, semantic or otherwise
+- a prose intent anchor
+- a model in any path that can halt, allow, or veto an action
+- narration of agent output
+- any design that requires a decision at a desk
+- any API-key setting; voice uses bb's configured service, output uses the Web
+  Speech API
 
 ## Architecture
 
-- **Meta thread** — the operator's interface thread. Holds the intent anchor,
-  runs the metacognitive prompts, communicates with the operator via the
-  phone channel.
-- **Working thread(s)** — ordinary BB threads, muted to the operator. The
-  meta thread reads their state via agent-graph's HTTP endpoint.
-- **Phone channel** — `bb.http.experimental_websocket("/dkam")` plus a served
-  HTML page. Carries recaps and drift alerts; receives voice (transcribed via
-  BB's existing voice transcription AI service).
+One headless BB plugin entry, `server.ts`, with no `bb.app` and no frontend
+bundle. Target module layout and the planned BB surfaces are listed in
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Interface contract with agent-graph
 
-The sole integration point between DKAM and the agent-graph plugin:
+The single read point, used only as a source of verified facts:
 
 ```
 GET /api/v1/plugins/agent-graph/http/graph?threadId=<id>
 ```
 
-Returns the `Graph` JSON model of that thread's activity. Nothing else is
-assumed about agent-graph's internals.
-
-## Key BB plugin surfaces used
-
-- `bb.cli.register(defineCli(...))` — `bb dkam status|watch|unwatch|recap`
-- `bb.agents.registerTool` — the `state_snapshot` tool (zod-parameterized)
-- `bb.settings.define` — TTS API key (secret), operator mode, episode length
-- `bb.storage.kv` / `bb.storage.database()` — watch registry and later state
-- `bb.background.service` — drift watcher (TODO)
-- `bb.http.experimental_websocket` — phone channel (TODO)
-- `bb.server.loopbackBaseUrl` — base URL for agent-graph HTTP calls
-
 ## Conventions
 
-- Headless plugin: no `bb.app`, no frontend bundle.
 - New experimental BB surfaces keep the `experimental_` prefix.
-- Scaffold stubs are marked with `TODO` comments; do not silently remove them
-  without implementing the subsystem.
+- Stubs are marked `TODO` with the milestone they belong to. Do not remove a
+  stub without implementing the subsystem it stands for.
+- Docs are written for a cold reader. No references to superseded drafts, and no
+  narrative of how a decision evolved. If a decision changed, the current
+  reasoning is written as if it were always the reasoning.
+- Domain and technical documentation are written after the code exists,
+  spec-first, not before.
 
 ## Test command
 
@@ -69,9 +54,13 @@ assumed about agent-graph's internals.
 npm test
 ```
 
-Runs `vitest run` over `tests/`. Currently covers integration-contract
-conformance (`docs/domain-architecture/events/` specs against the meta-schema,
-plus the inverse malformed-spec test). Plugin runtime tests are TBD.
+`vitest run --passWithNoTests`. There are currently no automated tests.
+
+**Declared exemption:** this project has no tests until milestone 1 (the duty
+log) lands. The reason is that the only tests that existed guarded event
+specifications for a design that has been removed, and there is no runtime to
+test yet. The command is declared and runnable so that the first real test
+needs no setup change. Test coverage requirements resume at milestone 1.
 
 ## Navigation
 

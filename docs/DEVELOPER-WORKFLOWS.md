@@ -1,45 +1,50 @@
 # Developer workflows
 
+## Read first
+
+[docs/HANDOFF.md](HANDOFF.md) is authoritative, including the milestone order
+and the list of things not to build. Do not start from this file.
+
 ## Build
 
 ```sh
 npm install
-npx tsc --noEmit     # typecheck
-bb plugin build      # emits dist/server.js + map + meta
+npm run typecheck   # tsc --noEmit
+npm run build       # bb plugin build -> dist/
 ```
 
-## Install / run locally
+## Install and reload
 
 ```sh
-bb plugin install .   # path install (register in place)
-bb plugin reload dkam # after changing server.ts
-bb dkam status        # try the CLI
+bb plugin install .    # path install, registers in place
+bb plugin reload dkam  # after editing server.ts
 ```
+
+There is no CLI surface yet. Milestone 1 adds `bb dkam status | decisions |
+report`.
 
 ## Test
 
 ```sh
-npm test   # vitest run — contract conformance over docs/domain-architecture/events/
+npm test
 ```
 
-The command is also declared in the root `AGENTS.md` under `## Test command`.
-Plugin runtime tests (CLI behavior against a live server) are TBD.
+`vitest run --passWithNoTests`. No tests exist yet; the exemption and its reason
+are declared in the root `AGENTS.md`. Coverage requirements resume at
+milestone 1, which is the duty log: append, render, query, and the invariant
+that every entry carries a reason.
 
 ## Deploy
 
-Two-stage pipeline (staging + production) scripts live in `scripts/staging/`:
-`deploy.sh`, `e2e.sh`, `teardown.sh`. The branch name is the staging identity.
-See `~/.agents/agents-md-detail/two-stage-pipelines.md`.
+Two-stage pipeline scripts live in `scripts/staging/`, keyed on the branch name
+as the staging identity. All three are stubs that fail loud with a `TODO`; there
+is no staging target yet.
 
-## Local dev notes
+## Definition of done for a milestone
 
-- No frontend bundle; there is no `bb plugin dev` app watch. Rebuild and
-  `bb plugin reload dkam` after edits.
-- Settings are read once per load — reload after changing one
-  (`bb plugin config dkam`).
-- The TTS API key is a secret setting; it is stored server-side and never
-  sent to the frontend. Request it through the secrets flow, never paste it
-  in chat.
-- Agent-graph dependency: `bb dkam recap` and `state_snapshot` need the
-  agent-graph plugin serving
-  `GET /api/v1/plugins/agent-graph/http/graph?threadId=<id>`.
+- `npm run typecheck` clean
+- `npm test` passing, with at least one failure-expecting test written before
+  the fix it validates
+- `npm run build` emits `dist/`
+- `AGENTS.md` and `HANDOFF.md` updated if the design moved, written for a cold
+  reader with no references to superseded drafts
