@@ -1,7 +1,9 @@
 # Purpose
 
-DKAM gives a walking or biking operator a metacognitive layer over their BB
-agent threads: on-demand "where am I" state snapshots, drift detection against
-a stated intent anchor, capped episodes that force re-grounding, deferred
-review of consequential actions, and a phone channel for speech in and out —
-so the agent keeps working safely while nobody looks at a screen.
+DKAM lets an operator keep a BB agent working while away from any screen, and
+never have to come back to the desk to unblock it. The operator declares a
+constraint set once; DKAM checks it mechanically at every turn boundary, speaks
+only verified facts and rule violations in one line with a one-word fix, records
+every decision no rule covered as a stated assumption, and parks unresolved
+items instead of stopping. Speech in and out, no screen, no keyboard, no desk
+round trip.
