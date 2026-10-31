@@ -167,14 +167,45 @@ Rules for the log:
   sessions cannot be mapped, everything else is in" is the useful form.
 - A count may appear, but only as support for a sentence, never as the entry.
 
+### 4.4.1 The entry is a brief, not an utterance
+
+The entry schema is borrowed whole from the agent tree's reply-state-header rule
+(`~/.agents/agents-md-detail/reply-state-header.md`), which already defines the
+decision brief the operator reads elsewhere. Two entry kinds:
+
+- **Closed entry.** A call made on the run's own authority. It stores what was
+  decided, the evidence cited, the option set considered with costs, the choice,
+  the reason, and what it changed downstream.
+- **Open entry.** A pending ruling. It stores the six brief parts: what this is,
+  where it stands with cited evidence, every option named with its cost, a
+  recommendation with its reason, what changes when the ruling lands, and the
+  decision the question implies but does not ask.
+
+Two rules come with the format:
+
+- **Repeat in full.** An open entry is presented in full every time the operator
+  reconnects, every report, every relay. Never "as discussed", never a summary,
+  never a pointer. If repeating it feels expensive, close items or stop asking.
+- **Relay uncompressed.** A child worker's open entry travels upward through its
+  lane and its commander carrying the full brief. The operator never sees a
+  pointer to a pointer.
+
+The log stores briefs, never the utterances that carried them. Voice, swipe, and
+keyboard are transports; the loop they carry is defined in section 5.5.
+
 ### 4.5 The report
 
-One interruption per run, at the end, containing:
+One interruption per run, at the end. The report is a relay, not the full record:
+the log stays queryable underneath it, exactly as the sashay closure loop pairs a
+chronicle with a relay. It carries the reply-state-header's four blocks:
 
-1. What changed, in one sentence.
-2. Every call made on its own authority, from the duty log.
-3. Anything refused by the ROE, and what the run did instead.
-4. Whether the done condition is met, and if not, why.
+1. **State.** What changed, in one sentence, with the artifact.
+2. **Waiting on you.** Every open entry, numbered, each with its full brief.
+3. **Done since last.** Closed entries and ROE refusals, most recent first, with
+   evidence.
+4. **FYI.** At most two items the operator may skip entirely.
+
+Whether the done condition is met, and if not why, is the first line of State.
 
 ---
 
@@ -220,6 +251,49 @@ No custom TTS provider, no API key setting, no bespoke notification path.
 - Say the thing that matters, not the size of the thing.
 - If it cannot be said in one sentence, it is not for the channel; it goes in
   the report.
+- Machine plumbing never renders into operator-visible text: mode tags, turn
+  markers, and harness reminders stay in the pipes.
+
+### 5.5 The decision loop, at every altitude
+
+Strip the transport out and one loop remains, at every level of the fleet:
+
+1. **Brief.** The agent states the situation, self-contained, evidence cited,
+   readable cold.
+2. **Recommend.** Every option named with its cost, one picked with the reason.
+3. **Decide.** The operator approves, amends, or defers, and the outcome is
+   recorded and applied verbatim.
+
+The loop is the same unit at every altitude, and the altitudes follow the bb
+thread hierarchy (`~/.agents/agents-md-detail/thread-hierarchy.md`):
+
+- **Per decision.** One open entry, one brief, one ruling. Child-worker
+  altitude.
+- **Per run.** The end-of-run report, four header blocks, all open entries in
+  full. Lane or commander altitude.
+- **Per day, across the fleet.** The morning brief the overnight path already
+  produces, with the deferral rollup. Operator altitude.
+
+Escalation has one exception worth naming: when work becomes an incident that
+escalates to the operator, it is commanded at root level, and DKAM treats its
+open entries as commander-level regardless of which thread held them before.
+
+The brief is stored whole; each surface renders a different amount of it:
+
+| Surface | Renders | Costs the operator |
+|---|---|---|
+| Voice | One sentence: the recommendation and its stakes; one word back | The least; the full brief waits in the log |
+| Card (phone or watch) | The six brief parts, scrollable, one decision per card | One gesture per ruling |
+| Report | All four header blocks, every open entry in full | One read per run |
+| Desk | Everything | The thing the design exists to avoid |
+
+A gesture surface (left and right to move between pending decisions, up to
+approve the recommendation, down to reject or ask for alternatives) and the
+deferral signals worth recording are noted in
+[musings/2026-10-31-decision-loop-swipe-surface-and-deferral-signals.md](musings/2026-10-31-decision-loop-swipe-surface-and-deferral-signals.md).
+They stay a noted idea until a real run shows the operator wants them. One rule
+from that note belongs in the design now: **a skipped decision is a signal, never
+a vote.** Silence stays non-consensual.
 
 ---
 
@@ -278,13 +352,14 @@ mandate/
   job-card.ts             parse and validate a job card
   roe.ts                  the ROE rule set
   enforce.ts              harness-side refusal; no model
-  duty-log.ts             append, render, query
+  duty-log.ts             append, render, query; stores briefs, not utterances
 comms/
   verbs.ts                the fixed verb vocabulary and grammar
   speak.ts                sentence construction, one-sentence budget
+  briefs.ts               open and closed entries; repeat-in-full, relay rules
   channel.ts              websocket page, push-to-talk, Web Speech out
 report/
-  compose.ts              the one end-of-run report
+  compose.ts              the end-of-run relay, four header blocks
 ```
 
 `docs/domain-architecture/` is rebuilt after the code exists, spec-first, not
@@ -292,10 +367,11 @@ before.
 
 ### First milestone, in order
 
-1. **Duty log only.** The agent can append a call with a reason; `bb dkam
-   decisions <thread>` prints it. No voice, no enforcement, no reporting. This
-   is the smallest thing that is worth anything, because the duty log is the
-   artifact the whole design rests on.
+1. **Duty log only.** The agent can append a closed entry (call, evidence,
+   options considered, choice, reason, what changed); `bb dkam decisions
+   <thread>` prints them. No voice, no enforcement, no reporting. This is the
+   smallest thing that is worth anything, because the duty log is the artifact
+   the whole design rests on.
 2. **ROE enforcement.** One rule, trunk-merge refusal, implemented in the
    harness. Test that the agent adapts rather than stalls.
 3. **The report.** One interruption at end of run, composed from the duty log.
